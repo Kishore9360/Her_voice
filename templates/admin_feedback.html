@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Feedback</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='sos.css') }}">
+
+<style>
+body{
+font-family:Arial;
+background:#f4f6f9;
+margin:0;
+padding:20px;
+}
+
+.user i{
+    color: #17adc4;
+}
+
+h2{
+margin-bottom:20px;
+color:black;
+}
+
+.feedback-card{
+background:white;
+padding:20px;
+margin-bottom:15px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.rating{
+color:#ff9800;
+font-size:18px;
+}
+
+.solve-btn{
+background:#28a745;
+color:white;
+padding:8px 15px;
+border-radius:5px;
+text-decoration:none;
+font-size:14px;
+}
+
+.solve-btn:hover{
+background:#218838;
+}
+
+.back-btn{
+    display:inline-block;
+    margin-bottom:10px;
+    padding:8px 15px;
+    background: linear-gradient(to right, #17a2b8, #e63946);
+    color:white;
+    text-decoration:none;
+    border-radius:5px;
+    font-size:12px;
+    margin-left: 90%;
+}
+
+.back-btn:hover{
+    background: linear-gradient(to right, #17a2b8, #e63946);;
+}
+
+</style>
+</head>
+
+<body>
+<a href="{{ url_for('admin_dashboard') }}" class="back-btn">⬅ Back </a>
+<div class="user">
+<h2><i class="fa-solid fa-comments"></i> User Feedback</h2>
+</div>
+
+{% for f in feedback_list %}
+
+<div class="feedback-card">
+
+<h4>{{ f.name }} ({{ f.mobile }})</h4>
+
+<p><b>Category:</b> {{ f.category }}</p>
+
+<p><b>Message:</b> {{ f.message }}</p>
+
+<!-- ✅ CORRECT RATING DISPLAY -->
+<p class="rating">
+    <b>Rating:</b>
+
+    <!-- Filled stars -->
+    {% for i in range(f.rating) %}
+        <span style="color: orange;">★</span>
+    {% endfor %}
+
+    <!-- Empty stars -->
+    {% for i in range(5 - f.rating) %}
+        <span style="color: lightgray;">★</span>
+    {% endfor %}
+
+    ({{ f.rating }}/5)
+</p>
+
+{% if f.status != "Solved" %}
+<a href="{{ url_for('solve_feedback', feedback_id=f.id) }}" class="solve-btn">
+<i class="fa fa-check"></i> Solve
+</a>
+{% else %}
+<span class="badge resolved">Solved</span>
+{% endif %}
+
+</div>
+
+{% else %}
+<p>No feedback available.</p>
+{% endfor %}
+<!-- SOS FLOATING BUTTON -->
+<!-- ======================= -->
+<button class="sos-btn" onclick="sendSOS()">SOS</button>
+
+<!-- ======================= -->
+<!-- SOS MODAL -->
+<!-- ======================= -->
+<div id="sosModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeSOS()">&times;</span>
+    <h2 style="color:red;">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      SOS ACTIVATED
+    </h2>
+    <p>
+      Emergency services have been notified.<br>
+      Your location has been shared with trusted contacts.<br><br>
+      <strong>Stay calm. Help is on the way.</strong>
+    </p>
+    <div style="margin-top:20px;">
+      Emergency Hotline:
+      <a href="tel:1091" style="color:red;font-weight:bold;">
+        1091
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+</body>
+</html>
